@@ -5,7 +5,7 @@
 def add_arrays(arr1, arr2):
     """function that adds two arrays element-wise"""
     arr_sum = []
-    if len(arr1) == len(arr2) and type(arr1[0]) is int and type(arr2[0]) is int:
+    if len(arr1) == len(arr2):
         for i in range(len(arr1)):
             arr_sum.append(arr1[i] + arr2[i])
         return arr_sum
