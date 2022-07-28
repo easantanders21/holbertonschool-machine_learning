@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Slices a matrix along specific axes"""
 
-import numpy as np
-
 
 def np_slice(matrix, axes={}):
     """Slices a matrix along specific axes"""
