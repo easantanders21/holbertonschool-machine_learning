@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """  class Poisson """
+e = 2.7182818285
 
 
 class Poisson:
@@ -17,3 +18,29 @@ class Poisson:
             raise ValueError("data must contain multiple values")
         else:
             self.lambtha = float(sum(data)/len(data))
+
+
+    def pmf(self, k):
+        """ instance method pmf """
+        if k is not int:
+            try:
+                k = int(k)
+            except:
+                return 0
+        if k < 0:
+            return 0
+        pmf = (e ** (-self.lambtha) * self.lambtha ** (k)) / factorial(k)
+        return pmf
+
+
+    def cdf(self, k):
+        """ instance method cdf """
+        pass
+        
+
+def factorial(num):
+    """ calculates a factorial """
+    factorial = 1
+    for i in range(1,num + 1):    
+       factorial = factorial * i
+    return factorial
