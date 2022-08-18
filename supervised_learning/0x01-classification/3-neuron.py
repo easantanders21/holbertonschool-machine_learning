@@ -31,3 +31,14 @@ class Neuron:
     def A(self):
         """ A getter method """
         return self.__A
+
+    def forward_prop(self, X):
+        """ sigmoid activation function """
+        Z = np.matmul(self.W, X) + self.b
+        self.__A = 1/(1+np.exp(-Z))
+        return self.__A
+
+    def cost(self, Y, A):
+        """ cost function """
+        J = -np.sum(Y*np.log(A)+(1-Y)*np.log(1.0000001 - A))/Y.shape[1]
+        return J
