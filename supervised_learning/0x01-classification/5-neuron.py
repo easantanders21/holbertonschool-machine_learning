@@ -51,6 +51,7 @@ class Neuron:
         return evaluate_array, costo
 
     def gradient_descent(self, X, Y, A, alpha=0.05):
+        """ gradient descent"""
         dZ = A-Y
         m = Y.shape[1]
         dW = np.matmul(dZ, X.T)/m
