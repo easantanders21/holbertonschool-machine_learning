@@ -9,7 +9,7 @@ class DeepNeuralNetwork:
     """
 
     def __init__(self, nx, layers):
-        """ DeepNeuralNetwork object attributes initialization """
+        """DeepNeuralNetwork object attributes initialization"""
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
         if nx < 1:
@@ -17,10 +17,11 @@ class DeepNeuralNetwork:
         if type(layers) is not list or len(layers) < 1:
             raise TypeError("layers must be a list of positive integers")
         self.nx = nx
-        self.L = len(layers)
-        self.cache = {}
-        self.weights = {}
-        for i in range(self.L):
+        self.__L = len(layers)
+        self.__cache = {}
+        self.__weights = {}
+
+        for i in range(self.__L):
             if ((type(layers[i]) is not int) or (layers[i] < 1)):
                 raise TypeError("layers must be a list of positive integers")
             self.weights["b{}".format(i+1)] = np.zeros((layers[i], 1))
