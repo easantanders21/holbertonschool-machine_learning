@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-One-Hot Decode
-"""
+""" One-Hot Decode """
 import numpy as np
 
 
