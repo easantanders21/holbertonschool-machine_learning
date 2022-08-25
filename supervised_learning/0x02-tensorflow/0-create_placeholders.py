@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-""" create_placeholders """
-import tensorflow as tf
+"""
+File for placeholders
+"""
+import tensorflow.compat.v1 as tf
 
 
 def create_placeholders(nx, classes):
-    """Returns two placeholders, x and y, for the neural network.
-    """
-    x = tf.placeholder("float", [None, nx], name="x")
-    y = tf.placeholder("float", [None, classes], name="y")
+    """ Returns two placeholders, x and y, for the neural network """
+    x = tf.placeholder(dtype="float32", shape=(None, nx), name="x")
+    y = tf.placeholder(dtype="float32", shape=(None, classes), name="y")
     return x, y
