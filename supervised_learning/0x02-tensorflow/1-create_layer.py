@@ -4,10 +4,10 @@ import tensorflow.compat.v1 as tf
 
 
 def create_layer(prev, n, activation):
-    """ creates the layers for the neural network """
-    init = tf.contrib.layers.\
-        variance_scaling_initializer(mode="FAN_AVG")
-    layer = tf.layers.Dense(units=n, activation=activation,
-                            name="layer", kernel_initializer=init)
-    y = layer(prev)
-    return y
+    """ create layer """
+    new_layer = tf.layers.Dense(
+        n, activation,
+        kernel_initializer=tf.keras.initializers.VarianceScaling(
+            mode='fan_avg'),
+        name="layer")
+    return new_layer(prev)
