@@ -1,89 +1,70 @@
 #!/usr/bin/env python3
-""" Mini-Batch """
+""" Build, trains and saves a neural network classifier """
+
 import tensorflow.compat.v1 as tf
 shuffle_data = __import__('2-shuffle_data').shuffle_data
 
 
-def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32,
-                     epochs=5, load_path="/tmp/model.ckpt",
-                     save_path="/tmp/model.ckpt"):
-    """Tains a loaded neural network model using mini-batch gradient descent."""
-    m = X_train.shape[0]
-    fetcher = tf.train.import_meta_graph("{}.meta".format(load_path))
-    saver = tf.train.Saver()
+def train_mini_batch(
+        X_train, Y_train, X_valid, Y_valid, batch_size=32,
+        epochs=5, load_path="/tmp/model.ckpt", save_path="/tmp/model.ckpt"):
+    """ Build, trains and saves a neural network classifier """
 
     with tf.Session() as session:
+        store = tf.train.import_meta_graph("{}.meta".format(load_path))
+        store.restore(session, load_path)
+        graph = tf.get_default_graph()
 
-        fetcher.restore(session, load_path)
-        x = tf.get_collection("x")[0]
-        y = tf.get_collection("y")[0]
-        accuracy = tf.get_collection("accuracy")[0]
-        loss = tf.get_collection("loss")[0]
-        train_op = tf.get_collection("train_op")[0]
-
-        ''' With the batch (mini-batch) size defined computes
-        the total number of batches (mini-batches) to train:
-        total_batches = n_batches = batches = total_steps = iterations.
-        Note that you have to train at least a batch (mini-batch)
-        with size minor or equal that batch size defined'''
-
-        if m <= batch_size:
-            batches = 1
-        if m > batch_size and m % batch_size == 0:
-            batches = m // batch_size
-        if m > batch_size and m % batch_size != 0:
-            batches = m // batch_size + 1
+        m = X_train.shape[0]
+        steps = m // batch_size + 1
+        x = graph.get_collection('x')[0]
+        y = graph.get_collection('y')[0]
+        accuracy = graph.get_collection('accuracy')[0]
+        loss = graph.get_collection('loss')[0]
+        train_op = graph.get_collection('train_op')[0]
 
         for epoch in range(epochs + 1):
-            train_accuracy = session.run(accuracy,
-                                         feed_dict={x: X_train, y: Y_train})
-            train_cost = session.run(loss, feed_dict={x: X_train, y: Y_train})
-            valid_accuracy = session.run(accuracy,
-                                         feed_dict={x: X_valid, y: Y_valid})
-            valid_cost = session.run(loss, feed_dict={x: X_valid, y: Y_valid})
+            train_accuracy, train_cost = session.run(
+                [accuracy, loss], feed_dict={x: X_train, y: Y_train}
+            )
+            valid_accuracy, valid_cost = session.run(
+                [accuracy, loss], feed_dict={x: X_valid, y: Y_valid}
+            )
 
-            print('After {} epochs:'.format(epoch))
-            print('\tTraining Cost: {}'.format(train_cost))
-            print('\tTraining Accuracy: {}'.format(train_accuracy))
-            print('\tValidation Cost: {}'.format(valid_cost))
-            print('\tValidation Accuracy: {}'.format(valid_accuracy))
+            print("After {} epochs:".format(epoch))
+            print("\tTraining Cost: {}".format(train_cost))
+            print("\tTraining Accuracy: {}".format(train_accuracy))
+            print("\tValidation Cost: {}".format(valid_cost))
+            print("\tValidation Accuracy: {}".format(valid_accuracy))
 
-            if epoch < epochs:
+            if epoch == epochs:
+                break
 
-                X_shuffled, Y_shuffled = shuffle_data(X_train, Y_train)
+            # Shuffle the training data
+            x_shuffle, y_shuffle = shuffle_data(X_train, Y_train)
 
-                for batch in range(batches):
+            # Loop over the training data
+            for step in range(steps):
+                start = batch_size * step
+                end = batch_size * (step + 1)
 
-                    batch_start = batch * batch_size
+                # Get X_batch and Y_batch
+                x_batch = x_shuffle[start:end]
+                y_batch = y_shuffle[start:end]
 
-                    if batch < batches - 1:
-                        batch_end = batch_start + batch_size
-                    else:
-                        if m <= batch_size:
-                            batch_end = m
-                        if m > batch_size and m % batch_size == 0:
-                            batch_end = batch_start + batch_size
-                        if m > batch_size and m % batch_size != 0:
-                            batch_end = batch_start + m % batch_size
+                # Train your model
+                session.run(
+                    train_op,
+                    feed_dict={x: x_batch, y: y_batch}
+                )
 
-                    session.run(
-                        train_op,
-                        feed_dict={x: X_shuffled[batch_start:batch_end],
-                                   y: Y_shuffled[batch_start:batch_end]})
+                if (step + 1) % 100 == 0:
+                    step_accuracy, step_cost = session.run(
+                        [accuracy, loss], feed_dict={x: x_batch, y: y_batch}
+                    )
 
-                    if (batch + 1) % 100 == 0:
-                        step_cost = session.run(
-                            loss,
-                            feed_dict={x: X_shuffled[batch_start:batch_end],
-                                       y: Y_shuffled[batch_start:batch_end]})
-                        step_accuracy = session.run(
-                            accuracy,
-                            feed_dict={x: X_shuffled[batch_start:batch_end],
-                                       y: Y_shuffled[batch_start:batch_end]})
+                    print("\tStep {}:".format(step + 1))
+                    print("\t\tCost: {}".format(step_cost))
+                    print("\t\tAccuracy: {}".format(step_accuracy))
 
-                        print('\tStep {}:'.format(batch + 1))
-                        print('\t\tCost: {}'.format(step_cost))
-                        print('\t\tAccuracy: {}'.format(step_accuracy))
-
-        saved_path = saver.save(session, save_path)
-        return saved_path
+        return store.save(session, save_path)
