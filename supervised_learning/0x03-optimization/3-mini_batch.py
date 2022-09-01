@@ -1,34 +1,13 @@
 #!/usr/bin/env python3
 """ Mini-Batch """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 shuffle_data = __import__('2-shuffle_data').shuffle_data
 
 
 def train_mini_batch(X_train, Y_train, X_valid, Y_valid, batch_size=32,
                      epochs=5, load_path="/tmp/model.ckpt",
                      save_path="/tmp/model.ckpt"):
-    """Tains a loaded neural network model using mini-batch gradient descent.
-    Args:
-        X_train: `numpy.ndarray` of shape (m, 784),
-            containing the training data.
-            m: `int`, the number of data points.
-            784 is the number of input features.
-        Y_train: `numpy.ndarray` of shape (m, 10) one hot encoded,
-            containing the training labels.
-            10 is the number of classes the model should classify.
-        X_valid: `numpy.ndarray` of shape (m, 784),
-            containing the validation data.
-        Y_valid: `numpy.ndarray` of shape (m, 10) one hot encoded,
-            containing the validation labels.
-        batch_size: `int`, the number of data points in a batch.
-        epochs: `int`, the number of times the training should pass through
-            the whole dataset.
-        load_path: `str`, the path from which to load the model.
-        save_path: `str`, the path to where the model should be saved after
-            training.
-    Returns:
-        saved_path: `str`, the path where the model was saved.
-    """
+    """Tains a loaded neural network model using mini-batch gradient descent."""
     m = X_train.shape[0]
     fetcher = tf.train.import_meta_graph("{}.meta".format(load_path))
     saver = tf.train.Saver()
