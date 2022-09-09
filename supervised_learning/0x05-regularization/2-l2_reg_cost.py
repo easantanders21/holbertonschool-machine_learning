@@ -2,7 +2,7 @@
 """2-l2_reg_cost module
 contains the function l2_reg_cost
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def l2_reg_cost(cost):
