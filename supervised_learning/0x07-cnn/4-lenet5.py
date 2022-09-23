@@ -3,7 +3,7 @@
 4-lenet5 module
 contains function lenet5
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def lenet5(x, y):
