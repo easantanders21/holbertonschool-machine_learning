@@ -66,4 +66,4 @@ class Encoder(tf.keras.layers.Layer):
         for i in range(self.N):
             x = self.blocks[i](x, training, mask)
 
-        return
+        return x
