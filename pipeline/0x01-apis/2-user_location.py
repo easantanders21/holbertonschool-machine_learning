@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 """
-2-user_location.py
+2. Rate me is you can!
 """
-from requests import get
-from sys import argv
+import requests
+import sys
+import time
+
 
 if __name__ == '__main__':
-    url = argv[1]
-    response = get(url)
-    data = response.json()
-    if response.status_code == 403:
-        print('Reset in {} min'.format(data.get('X-Ratelimit-Reset')))
-    elif response.status_code == 404:
-        print('Not found')
+    url = sys.argv[1]
+    response = requests.get(url)
+
+    if response.status_code == 404:
+        print("Not found")
+    elif response.status_code == 403:
+        rate_limit = int(response.headers['X-Ratelimit-Reset'])
+        now = int(time.time())
+        minutes = int((rate_limit - now) / 60)
+        print("Reset in {} min".format(minutes))
     else:
-        print(data.get('location'))
+        print(response.json()["location"])
