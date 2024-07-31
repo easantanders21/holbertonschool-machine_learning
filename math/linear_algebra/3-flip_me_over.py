@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Transpose of a 2D matrix"""
 
+
 def matrix_transpose(matrix):
     """function that returns the transpose of a 2D matrix"""
     matrix_t = []
