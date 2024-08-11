@@ -4,10 +4,10 @@
 
 def poly_derivative(poly):
     ''' function that calculates the derivative of a polynomial '''
-    if type(poly) is not list:
+    if type(poly) is not list or len(poly) == 0:
         return None
     else:
-        if len(poly) < 2:
+        if len(poly) == 1:
             return [0]
         else:
             der = []
