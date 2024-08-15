@@ -31,6 +31,7 @@ class Node:
             return max(max_depth_left, max_depth_right, self.depth)
 
     def left_child_add_prefix(self, text):
+        ''' adds a prefix to the left '''
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
@@ -38,6 +39,7 @@ class Node:
         return new_text
 
     def right_child_add_prefix(self, text):
+        ''' adds a prefix to the right '''
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
@@ -45,23 +47,17 @@ class Node:
         return new_text
 
     def __str__(self):
-        if self.is_leaf:
-            return f'-> leaf [value={self.sub_population}]'
-        if self.is_root:
-            node_str = (f'root [feature={self.feature}, '
-                        f'threshold={self.threshold}]')
-        else:
-            node_str = (f'-> node [feature={self.feature}, '
-                        f'threshold={self.threshold}]')
-        left_str = (
-            self.left_child_add_prefix(str(self.left_child))
-            if self.left_child else "None"
-        )
-        right_str = (
-            self.right_child_add_prefix(str(self.right_child))
-            if self.right_child else "None"
-        )
-        return f'{node_str}\n{left_str}{right_str}'
+        ''' creates the entire tree string '''
+        current = "root" if self.is_root else "-> node"
+        result = \
+            f"{current} [feature={self.feature}, threshold={self.threshold}]\n"
+        if self.left_child:
+            result += \
+              self.left_child_add_prefix(str(self.left_child).strip())
+        if self.right_child:
+            result += \
+              self.right_child_add_prefix(str(self.right_child).strip())
+        return result
 
 
 class Leaf(Node):
