@@ -60,6 +60,7 @@ class Node:
         return result
 
     def get_leaves_below(self):
+        ''' function that obtains all the leaves '''
         leaves_list = []
         if self.left_child:
             if self.left_child.is_leaf:
@@ -85,6 +86,7 @@ class Leaf(Node):
         return f'-> leaf [value={self.value}]'
 
     def get_leaves_below(self):
+        ''' return self as a list element '''
         return [self]
 
 
@@ -125,4 +127,5 @@ class Decision_Tree():
         return str(self.root)
 
     def get_leaves(self):
+        ''' return self -> root -> get leaves below '''
         return self.root.get_leaves_below()
